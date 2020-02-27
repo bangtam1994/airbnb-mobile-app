@@ -2,6 +2,8 @@ import React, { useCallback, useState, useEffect } from "react";
 import * as Font from "expo-font";
 import { AppLoading } from "expo";
 import { useNavigation } from "@react-navigation/core";
+import ViewPagerAndroid from "@react-native-community/viewpager";
+
 import {
   ActivityIndicator,
   Button,
