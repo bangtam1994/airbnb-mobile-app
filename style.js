@@ -8,7 +8,7 @@ const heightWindow = Dimensions.get("window").height;
 export default StyleSheet.create({
   //Commons
   container: {
-    // height: 320,
+    height: heightWindow,
     margin: 25
   },
   backgroundCoral: {

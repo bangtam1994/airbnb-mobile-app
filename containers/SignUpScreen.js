@@ -8,6 +8,8 @@ import {
   TouchableOpacity,
   ScrollView
 } from "react-native";
+import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
+
 import s from "../style";
 import * as Font from "expo-font";
 import { AppLoading } from "expo";
@@ -49,124 +51,126 @@ export default function SignUpScreen({ setToken, setId }) {
 
   // RETURN :
   return (
-    <View style={s.backgroundCoral}>
-      <View style={s.container}>
-        <View style={[s.signupHeader]}>
-          <Text style={[s.font, s.white, s.h1]}> Rejoignez-nous!</Text>
-        </View>
+    <KeyboardAwareScrollView>
+      <View style={s.backgroundCoral}>
+        <View style={s.container}>
+          <View style={[s.signupHeader]}>
+            <Text style={[s.font, s.white, s.h1]}> Rejoignez-nous!</Text>
+          </View>
 
-        <TextInput
-          style={[s.font, s.white, s.h2, s.margins]}
-          placeholder="email"
-          placeholderTextColor="#ffffff"
-          onChangeText={text => {
-            setEmail(text);
-          }}
-          value={email}
-        />
-        <View style={[s.line, s.marginBottom]} />
-        <TextInput
-          style={[s.font, s.white, s.h2, s.margins]}
-          placeholder="username"
-          placeholderTextColor="#ffffff"
-          onChangeText={text => {
-            setUsername(text);
-          }}
-          value={username}
-        />
-        <View style={s.line} />
-
-        <TextInput
-          style={[s.font, s.white, s.h2, s.margins]}
-          placeholder="name"
-          placeholderTextColor="#ffffff"
-          onChangeText={text => {
-            setName(text);
-          }}
-          value={name}
-        />
-
-        <View style={s.line} />
-
-        <View style={s.textArea}>
           <TextInput
             style={[s.font, s.white, s.h2, s.margins]}
-            placeholder="Présentez-vous en quelques mots..."
+            placeholder="email"
             placeholderTextColor="#ffffff"
-            multiline
             onChangeText={text => {
-              setDescription(text);
+              setEmail(text);
             }}
-            value={description}
+            value={email}
           />
-        </View>
+          <View style={[s.line, s.marginBottom]} />
+          <TextInput
+            style={[s.font, s.white, s.h2, s.margins]}
+            placeholder="username"
+            placeholderTextColor="#ffffff"
+            onChangeText={text => {
+              setUsername(text);
+            }}
+            value={username}
+          />
+          <View style={s.line} />
 
-        <TextInput
-          style={[s.font, s.white, s.h2, s.margins]}
-          placeholder="mot de passe"
-          placeholderTextColor="#ffffff"
-          secureTextEntry={true}
-          onChangeText={text => {
-            setPassword(text);
-          }}
-          value={password}
-        />
+          <TextInput
+            style={[s.font, s.white, s.h2, s.margins]}
+            placeholder="name"
+            placeholderTextColor="#ffffff"
+            onChangeText={text => {
+              setName(text);
+            }}
+            value={name}
+          />
 
-        <View style={s.line} />
+          <View style={s.line} />
 
-        <TextInput
-          style={[s.font, s.white, s.h2, s.margins]}
-          placeholder="confirmez le de passe"
-          placeholderTextColor="#ffffff"
-          secureTextEntry={true}
-          onChangeText={text => {
-            setPasswordConfirm(text);
-          }}
-          value={passwordConfirm}
-        />
+          <View style={s.textArea}>
+            <TextInput
+              style={[s.font, s.white, s.h2, s.margins]}
+              placeholder="Présentez-vous en quelques mots..."
+              placeholderTextColor="#ffffff"
+              multiline
+              onChangeText={text => {
+                setDescription(text);
+              }}
+              value={description}
+            />
+          </View>
 
-        <View style={s.line} />
-        <View style={s.marginsSignup}>
-          {/* ---- BUTTON SIGNUP WITH FUNCTION TO SEND TO BACKEND  ---- */}
-          <TouchableHighlight
-            style={[s.button]}
-            onPress={async () => {
-              try {
-                if (password !== passwordConfirm) {
-                  alert("Les mots de passe ne sont pas identiques");
-                } else {
-                  const response = await axios.post(
-                    "https://express-airbnb-api.herokuapp.com/user/sign_up",
-                    { email, username, name, description, password },
-                    { headers: { "Content-Type": "application/json" } }
-                  );
-                  if (response.data.token) {
-                    const userToken = response.data.token; //Token généré par backend
-                    const userId = response.data.id;
-                    setToken(userToken);
-                    setId(userId);
+          <TextInput
+            style={[s.font, s.white, s.h2, s.margins]}
+            placeholder="mot de passe"
+            placeholderTextColor="#ffffff"
+            secureTextEntry={true}
+            onChangeText={text => {
+              setPassword(text);
+            }}
+            value={password}
+          />
+
+          <View style={s.line} />
+
+          <TextInput
+            style={[s.font, s.white, s.h2, s.margins]}
+            placeholder="confirmez le de passe"
+            placeholderTextColor="#ffffff"
+            secureTextEntry={true}
+            onChangeText={text => {
+              setPasswordConfirm(text);
+            }}
+            value={passwordConfirm}
+          />
+
+          <View style={s.line} />
+          <View style={s.marginsSignup}>
+            {/* ---- BUTTON SIGNUP WITH FUNCTION TO SEND TO BACKEND  ---- */}
+            <TouchableHighlight
+              style={[s.button, s.marginTop]}
+              onPress={async () => {
+                try {
+                  if (password !== passwordConfirm) {
+                    alert("Les mots de passe ne sont pas identiques");
                   } else {
-                    alert("Vous n'avez pas renseigné tous les champs");
+                    const response = await axios.post(
+                      "https://express-airbnb-api.herokuapp.com/user/sign_up",
+                      { email, username, name, description, password },
+                      { headers: { "Content-Type": "application/json" } }
+                    );
+                    if (response.data.token) {
+                      const userToken = response.data.token; //Token généré par backend
+                      const userId = response.data.id;
+                      setToken(userToken);
+                      setId(userId);
+                    } else {
+                      alert("Vous n'avez pas renseigné tous les champs");
+                    }
                   }
+                } catch (error) {
+                  alert(error.message);
                 }
-              } catch (error) {
-                alert(error.message);
-              }
-            }}
-          >
-            <Text style={[s.font, s.h1, s.corail]}>S'inscrire</Text>
-          </TouchableHighlight>
-          <TouchableOpacity
-            onPress={() => {
-              navigation.navigate("SignIn");
-            }}
-          >
-            <Text style={[s.font, s.margins, s.white]}>
-              Déjà un compte ? <Text style={s.fontBold}> Se connecter</Text>
-            </Text>
-          </TouchableOpacity>
+              }}
+            >
+              <Text style={[s.font, s.h1, s.corail]}>S'inscrire</Text>
+            </TouchableHighlight>
+            <TouchableOpacity
+              onPress={() => {
+                navigation.navigate("SignIn");
+              }}
+            >
+              <Text style={[s.font, s.margins, s.white]}>
+                Déjà un compte ? <Text style={s.fontBold}> Se connecter</Text>
+              </Text>
+            </TouchableOpacity>
+          </View>
         </View>
       </View>
-    </View>
+    </KeyboardAwareScrollView>
   );
 }

@@ -36,7 +36,6 @@ export default function App() {
   const [isLoading, setIsLoading] = useState(true);
   const [userToken, setUserToken] = useState(null);
   const [userId, setUserId] = useState(null);
-  console.log("Le USER ID EST", userId);
   const [fontLoaded, setFontLoaded] = useState(false);
 
   // TOKEN POUR LOG-IN
@@ -70,6 +69,7 @@ export default function App() {
       // screen will be unmounted and thrown away.
       setIsLoading(false);
       setUserToken(userToken);
+      setUserId(userId);
     };
 
     bootstrapAsync();
@@ -240,7 +240,6 @@ export default function App() {
                             userToken={userToken}
                             setToken={setToken}
                             userId={userId}
-                            setId={setId}
                           />
                         )}
                       </Stack.Screen>

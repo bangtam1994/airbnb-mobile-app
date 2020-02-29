@@ -8,6 +8,8 @@ import {
   TouchableOpacity,
   KeyboardAvoidingView
 } from "react-native";
+import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
+
 import s from "../style";
 import * as Font from "expo-font";
 import { AppLoading } from "expo";
@@ -32,6 +34,7 @@ export default function SignInScreen({ setToken, setId }) {
   const [password, setPassword] = useState("");
 
   //FONT
+
   const [fontLoaded, setFontLoaded] = useState(false);
   if (!fontLoaded) {
     return (
@@ -44,17 +47,12 @@ export default function SignInScreen({ setToken, setId }) {
 
   // RETURN
   return (
-    <View style={s.backgroundCoral}>
-      <View style={s.container}>
-        <KeyboardAvoidingView
-          behavior="padding"
-          enabled
-          // style={{ flex: 1 }}
-        >
+    <KeyboardAwareScrollView>
+      <View style={s.backgroundCoral}>
+        <View style={s.container}>
           <View style={s.marginLogo}>
             <SimpleLineIcons name="home" size={100} color="white" />
           </View>
-
           <TextInput
             style={[s.font, s.white, s.h2, s.margins]}
             placeholder="Email"
@@ -77,7 +75,6 @@ export default function SignInScreen({ setToken, setId }) {
             value={password}
           />
           <View style={s.line} />
-
           <View style={s.marginLogo}>
             {/* ---- BUTTON LOGIN  TO SEND TO BACKEND  ---- */}
 
@@ -122,8 +119,8 @@ export default function SignInScreen({ setToken, setId }) {
               </Text>
             </TouchableOpacity>
           </View>
-        </KeyboardAvoidingView>
+        </View>
       </View>
-    </View>
+    </KeyboardAwareScrollView>
   );
 }

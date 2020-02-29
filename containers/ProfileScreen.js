@@ -8,10 +8,12 @@ import {
   Text,
   TextInput,
   TouchableHighlight,
+  TouchableOpacity,
   View
 } from "react-native";
 
 import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
+//Photo
 import * as Permissions from "expo-permissions";
 import * as ImagePicker from "expo-image-picker";
 
@@ -25,20 +27,16 @@ import empty from "../assets/images/emptypic.png";
 import s from "../style";
 
 export default function ProfileScreen({ userToken, setToken, setId, userId }) {
-  // setToken(null);
   //STATES
-  const [data, setData] = useState();
+  const [user, setUser] = useState();
   const [isLoading, setIsLoading] = useState(true);
   const [email, setEmail] = useState("");
   const [username, setUsername] = useState("");
   const [name, setName] = useState("");
   const [description, setDescription] = useState("");
-  //State update infos
-  const [update, setUpdate] = useState(false);
 
-  //State update image
-  const [image, setImage] = useState(null);
-  const [uploading, setUploading] = useState(false);
+  //State pour le bouton Mettre à jour
+  const [update, setUpdate] = useState(false);
 
   // FONCTION POUR FETCH LES DATA
   const fetchData = async (req, res) => {
@@ -47,7 +45,7 @@ export default function ProfileScreen({ userToken, setToken, setId, userId }) {
         `https://express-airbnb-api.herokuapp.com/user/${userId}`,
         { headers: { Authorization: "Bearer " + userToken } }
       );
-      setData(response.data);
+      setUser(response.data);
 
       setEmail(response.data.email);
       setUsername(response.data.username);
@@ -59,27 +57,10 @@ export default function ProfileScreen({ userToken, setToken, setId, userId }) {
     }
   };
 
-  // ***** FONCTION POUR UPLOAD IMAGE ******
-
-  const onSelect = useCallback(async () => {
-    // demander permission
-    const cameraRollPerm = await Permissions.askAsync(Permissions.CAMERA_ROLL);
-
-    // selectionner photo
-    if (cameraRollPerm.status === "granted") {
-      const pickerResult = await ImagePicker.launchImageLibraryAsync({
-        allowsEditing: true
-      });
-
-      // console.log(pickerResult);
-      setImage(pickerResult.uri);
-    }
-  }, []);
-
-  // ***** USEEFFECT DECLENCHE LA FONCTION FETCHDATA
+  // ***** USE EFFECT DECLENCHE LA FONCTION FETCHDATA
   useEffect(() => {
     fetchData();
-  }, [update]);
+  }, []);
 
   return (
     <View>
@@ -90,29 +71,80 @@ export default function ProfileScreen({ userToken, setToken, setId, userId }) {
       ) : (
         <KeyboardAwareScrollView>
           <View style={[s.container, s.alignItemsCenter]}>
-            {/* PHOTO PROFIL  */}
+            {/* UPLOAD DE LA PHOTO PROFIL  */}
             <View style={s.profilePic}>
-              <TouchableHighlight>
-                {data.photo ? (
-                  <Image source={empty} style={s.profilePic} />
+              <TouchableOpacity
+                onPress={async () => {
+                  // Permissions
+                  const cameraPerm = await Permissions.askAsync(
+                    Permissions.CAMERA
+                  );
+                  const cameraRollPerm = await Permissions.askAsync(
+                    Permissions.CAMERA_ROLL
+                  );
+
+                  // Choisir camera ou camera roll
+                  if (
+                    cameraPerm.status === "granted" &&
+                    cameraRollPerm.status === "granted"
+                  ) {
+                    const pickerResult = await ImagePicker.launchImageLibraryAsync(
+                      {
+                        allowsEditing: true,
+                        aspect: [4, 3]
+                      }
+                    );
+
+                    // Sending the file
+                    const uri = pickerResult.uri;
+                    const uriParts = uri.split(".");
+                    const fileType = uriParts[uriParts.length - 1];
+                    const formData = new FormData();
+                    formData.append("photo", {
+                      uri,
+                      name: `photo.${fileType}`,
+                      type: `image/${fileType}`
+                    });
+                    const options = {
+                      method: "PUT",
+                      body: formData,
+                      headers: {
+                        Authorization: "Bearer " + userToken,
+                        Accept: "application/json",
+                        "Content-Type": "multipart/form-data"
+                      }
+                    };
+                    //Envoi de la photo au backend
+                    try {
+                      const uploadResponse = await fetch(
+                        "https://express-airbnb-api.herokuapp.com/user/upload_picture/" +
+                          userId,
+                        options
+                      );
+
+                      const uploadResult = await uploadResponse.json();
+
+                      setUser(uploadResult);
+                    } catch (e) {
+                      console.log(e.message);
+
+                      alert("An error occurred");
+                    }
+                  }
+                }}
+              >
+                {user.photo && user.photo.length > 0 ? (
+                  <Image
+                    source={{ uri: user.photo[0].url }}
+                    style={s.profilePic}
+                  />
                 ) : (
-                  <Image source={data.photo} style={s.profilePic} />
+                  <Image source={empty} style={s.profilePic} />
                 )}
-              </TouchableHighlight>
+              </TouchableOpacity>
             </View>
 
-            {/* TEST UPLOAD PIC
-             */}
-            <Button title="Select photo" onPress={onSelect}></Button>
-            {image !== null ? (
-              <Image
-                source={{ uri: image }}
-                style={{ height: 300, width: 300 }}
-              />
-            ) : (
-              <Text>Pas d'image</Text>
-            )}
-
+            {/* DESCRIPTION DU COMPTE  */}
             <View style={[s.profileDescription, s.alignItemsCenter]}>
               <Text style={[s.h2, s.font, s.marginBottom]}>Name</Text>
               <TextInput
@@ -165,15 +197,13 @@ export default function ProfileScreen({ userToken, setToken, setId, userId }) {
                         {
                           email,
                           description,
-                          name,
+                          name: name,
                           username
                         },
                         { headers: { Authorization: "Bearer " + userToken } }
                       );
-                      setEmail(response.data.email);
-                      setUsername(response.data.username);
-                      setName(response.data.name);
-                      setDescription(response.data.description);
+
+                      setUser(response.data);
                       setUpdate(true);
                       setTimeout(() => {
                         setUpdate(false);
@@ -193,7 +223,7 @@ export default function ProfileScreen({ userToken, setToken, setId, userId }) {
               <TouchableHighlight
                 style={[s.button]}
                 onPress={() => {
-                  setToken(null);
+                  setToken(null); //On met le token a null donc déconnexion
                 }}
               >
                 <Text style={[s.font, s.h2, s.corail, s.margins]}>
