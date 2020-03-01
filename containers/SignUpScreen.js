@@ -1,19 +1,11 @@
 import React, { useState } from "react";
 import { useNavigation } from "@react-navigation/core";
-import {
-  Button,
-  Text,
-  TextInput,
-  View,
-  TouchableOpacity,
-  ScrollView
-} from "react-native";
+import { Text, TextInput, View, TouchableOpacity } from "react-native";
 import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
 
 import s from "../style";
 import * as Font from "expo-font";
 import { AppLoading } from "expo";
-import { SimpleLineIcons } from "@expo/vector-icons";
 import { TouchableHighlight } from "react-native-gesture-handler";
 
 import axios from "axios";

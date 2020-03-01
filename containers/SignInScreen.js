@@ -1,13 +1,6 @@
 import React, { useState } from "react";
 import { useNavigation } from "@react-navigation/core";
-import {
-  Button,
-  Text,
-  TextInput,
-  View,
-  TouchableOpacity,
-  KeyboardAvoidingView
-} from "react-native";
+import { Button, Text, TextInput, View, TouchableOpacity } from "react-native";
 import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
 
 import s from "../style";
@@ -95,7 +88,6 @@ export default function SignInScreen({ setToken, setId }) {
                       const userId = response.data.id;
                       setToken(userToken);
                       setId(userId);
-                      console.log("response.data.id", response.data.id);
                     } else {
                       alert("Mauvais email ou mot de passe");
                     }

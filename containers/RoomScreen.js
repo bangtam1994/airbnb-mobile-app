@@ -1,28 +1,17 @@
 import React, { useCallback, useState, useEffect } from "react";
 import * as Font from "expo-font";
 import { AppLoading } from "expo";
-import { useNavigation } from "@react-navigation/core";
-import ViewPagerAndroid from "@react-native-community/viewpager";
 
-import {
-  ActivityIndicator,
-  Button,
-  Image,
-  ScrollView,
-  Text,
-  View
-} from "react-native";
+import { ActivityIndicator, Image, ScrollView, Text, View } from "react-native";
 import { FontAwesome } from "@expo/vector-icons";
-import Constants from "expo-constants";
 import * as Permissions from "expo-permissions";
 import * as Location from "expo-location";
 import MapView, { PROVIDER_GOOGLE } from "react-native-maps";
-import Swiper from "react-native-swiper";
+import ViewPager from "@react-native-community/viewpager";
 
 import axios from "axios";
 //CSS
 import s from "../style";
-import { TouchableHighlight } from "react-native-gesture-handler";
 
 //FONT
 const fetchFonts = () => {
@@ -52,7 +41,7 @@ export default function RoomScreen({ route, navigation }) {
       const response = await axios.get(
         `https://airbnb-api.herokuapp.com/api/room/${id}`
       );
-      await setData(response.data); // data = {photos :[], title:, description, prix:5   }
+      setData(response.data); // data = {photos :[], title:, description, prix:5   }
       setIsLoading(false);
     } catch (error) {
       console.log(error.message);
@@ -106,7 +95,7 @@ export default function RoomScreen({ route, navigation }) {
       ) : (
         <ScrollView>
           <View style={s.roomPic}>
-            <Swiper>
+            <ViewPager style={{ flex: 1 }} initialPage={0}>
               {data.photos.map((photo, index) => {
                 return (
                   <Image
@@ -116,7 +105,7 @@ export default function RoomScreen({ route, navigation }) {
                   />
                 );
               })}
-            </Swiper>
+            </ViewPager>
 
             <View style={s.roomBlocPrice}>
               <Text style={[s.font, s.h2, s.white]}> {data.price} €</Text>

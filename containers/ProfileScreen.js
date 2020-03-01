@@ -26,7 +26,7 @@ import empty from "../assets/images/emptypic.png";
 //CSS
 import s from "../style";
 
-export default function ProfileScreen({ userToken, setToken, setId, userId }) {
+export default function ProfileScreen({ userToken, setToken, userId }) {
   //STATES
   const [user, setUser] = useState();
   const [isLoading, setIsLoading] = useState(true);

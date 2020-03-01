@@ -9,7 +9,6 @@ import HomeScreen from "./containers/HomeScreen";
 import ProfileScreen from "./containers/ProfileScreen";
 import SignInScreen from "./containers/SignInScreen";
 import SignUpScreen from "./containers/SignUpScreen";
-import SettingsScreen from "./containers/SettingsScreen";
 import RoomScreen from "./containers/RoomScreen";
 import AroundMe from "./containers/AroundMe";
 //CSS
@@ -56,7 +55,6 @@ export default function App() {
       AsyncStorage.removeItem("userId");
     }
     setUserId(id);
-    console.log("dans fonction setId,", userId);
   };
 
   useEffect(() => {

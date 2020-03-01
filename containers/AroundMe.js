@@ -2,15 +2,7 @@ import React, { useCallback, useState, useEffect } from "react";
 import * as Font from "expo-font";
 import { AppLoading } from "expo";
 import { useNavigation } from "@react-navigation/core";
-import {
-  ActivityIndicator,
-  Button,
-  Image,
-  ScrollView,
-  Text,
-  View
-} from "react-native";
-import Constants from "expo-constants";
+import { ActivityIndicator, Text, View } from "react-native";
 import * as Permissions from "expo-permissions";
 import * as Location from "expo-location";
 import MapView, { PROVIDER_GOOGLE } from "react-native-maps";
